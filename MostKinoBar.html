@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Меню</title>
+
+<style>
+body{margin:0;background:#f5f5f5;font-family:sans-serif}
+#pdf{max-width:900px;margin:auto;padding:10px}
+canvas{width:100%;display:block;margin:0 0 12px;background:#fff;
+box-shadow:0 2px 8px rgba(0,0,0,.1)}
+</style>
+</head>
+
+<body>
+<div id="pdf"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+const c=document.getElementById('pdf'),
+u='menu.pdf',
+p=window['pdfjs-dist/build/pdf'];
+
+p.GlobalWorkerOptions.workerSrc=
+'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+(async()=>{
+const d=await p.getDocument(u).promise;
+for(let i=1;i<=d.numPages;i++){
+const g=await d.getPage(i),
+v=g.getViewport({scale:1}),
+s=c.clientWidth/v.width,
+cv=document.createElement('canvas');
+cv.width=v.width*s;cv.height=v.height*s;
+await g.render({canvasContext:cv.getContext('2d'),
+viewport:g.getViewport({scale:s})}).promise;
+c.appendChild(cv);
+}})();
+</script>
+</body>
+</html>
